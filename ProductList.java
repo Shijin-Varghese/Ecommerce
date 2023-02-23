@@ -35,6 +35,27 @@ public class ProductList {
 
         return tablePane;
     }
+    public Pane getorderedlist(Customer loggedInCustomer){
+        TableColumn id = new TableColumn("Item");
+        id.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn name = new TableColumn("Laptop");
+        name.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn price = new TableColumn("Price");
+        price.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        String query = "select * from yourorders where cid="+ loggedInCustomer.getId();
+        ObservableList<Product> productsList = Product.getorders(query);
+        productTable = new TableView<>();
+        productTable.setItems(productsList);
+        productTable.getColumns().addAll(id, name, price);
+
+        Pane tablePane = new Pane();
+        tablePane.getChildren().add(productTable);
+
+        return tablePane;
+    }
     public Pane getAllSearchedProducts(String searchName){
         TableColumn id = new TableColumn("Item");
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
