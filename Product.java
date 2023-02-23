@@ -15,6 +15,12 @@ public class Product {
     private SimpleDoubleProperty price;
     private SimpleIntegerProperty quantity;
 
+    public Product(int pid, String name, double price) {
+        this.id = new SimpleIntegerProperty(pid);
+        this.name = new SimpleStringProperty(name);
+        this.price = new SimpleDoubleProperty(price);
+    }
+
     public int getQuantity() {
         return quantity.get();
     }
@@ -55,6 +61,26 @@ public class Product {
                             rs.getString("name"),
                             rs.getDouble("price"),
                             rs.getInt("quantity")
+                    ));
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public static ObservableList<Product> getorders(String query) {
+        DataBaseConnection dbConn = new DataBaseConnection();
+        ResultSet rs = dbConn.getQueryTable(query);
+        ObservableList<Product> result = FXCollections.observableArrayList();
+        try {
+            if (rs != null) {
+                while (rs.next()) {
+                    // taking out values from resultset
+                    result.add(new Product(
+                            rs.getInt("pid"),
+                            rs.getString("name"),
+                            rs.getDouble("price")
                     ));
                 }
             }
