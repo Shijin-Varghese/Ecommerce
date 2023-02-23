@@ -247,6 +247,7 @@ public class ECommerce extends Application {
                 boolean orderStatus = false;
                 if (product != null && loggedInCustomer != null) {
                     orderStatus = Order.placeOrder(loggedInCustomer, product);
+                    Order.myorder(loggedInCustomer, product);
                 }
                 if (orderStatus) {
                     //
@@ -263,8 +264,9 @@ public class ECommerce extends Application {
         ordersButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+                productList.getorderedlist(loggedInCustomer);
                 bodyPane.getChildren().clear();
-                bodyPane.getChildren().addAll(productList.getAllProducts());
+                bodyPane.getChildren().addAll( productList.getorderedlist(loggedInCustomer));
                 root.getChildren().clear();
                 root.getChildren().addAll(headerBar(signOutButton), bodyPane, footerBar());
 
