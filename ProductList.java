@@ -8,7 +8,12 @@ import javafx.scene.layout.Pane;
 
 public class ProductList {
 
-    public TableView<Product> productTable;
+    public static TableView<Product> productTable;
+
+    public static void removerow() {
+        Product pro=productTable.getSelectionModel().getSelectedItem();
+        productTable.getItems().remove(pro);
+    }
 
 
     public Pane getAllProducts(){
