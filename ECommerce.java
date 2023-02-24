@@ -6,8 +6,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -22,6 +20,8 @@ public class ECommerce extends Application {
     Pane allOrders;
     Button signInButton = new Button("Sign In");
     Button signOutButton = new Button("Sign Out");
+    Button buyNowButton = new Button("Buy Now");
+    Button removedButton = new Button("Remove");
     Button closeButton = new Button("Exit");
     Button ordersButton = new Button("Your Orders");
     Label welcomeLabel = new Label("");
@@ -134,7 +134,7 @@ public class ECommerce extends Application {
                         root.getChildren().addAll(headerBar(signOutButton), welcomeLabel, bodyPane, footerBar());
                     }
                     else {
-                        // user already exists
+
                         showDialogue("You are already registered, please Sign In!!!!");
                         loginPage();
                     }
@@ -238,8 +238,14 @@ public class ECommerce extends Application {
         dialog.showAndWait();
     }
     private GridPane footerBar() {
-        Button buyNowButton = new Button("Buy Now");
-//        buyNowButton.setBorder(new Border(new BorderStroke()));
+
+
+        GridPane footer = new GridPane();
+        footer.setTranslateY(headerLine + height);
+        footer.add(buyNowButton, 0, 0);
+        footer.add(ordersButton, 1, 0);
+        footer.add(removedButton,3,0);
+
         buyNowButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -250,12 +256,12 @@ public class ECommerce extends Application {
                     Order.myorder(loggedInCustomer, product);
                 }
                 if (orderStatus) {
-                    //
+
                     showDialogue("Order Successful!!!!");
 
                 }
                 else {
-                    //
+
                     showDialogue("Order can't be placed, please Sign In!!!!");
                 }
             }
@@ -268,15 +274,31 @@ public class ECommerce extends Application {
                 bodyPane.getChildren().clear();
                 bodyPane.getChildren().addAll( productList.getorderedlist(loggedInCustomer));
                 root.getChildren().clear();
-                root.getChildren().addAll(headerBar(signOutButton), bodyPane, footerBar());
 
+                removedButton.setVisible(true);
+                root.getChildren().addAll(headerBar(signOutButton), bodyPane, footerBar());
+            }
+        });
+        removedButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Product product = productList.getSelectedProduct();
+                boolean orderStatus = false;
+
+                orderStatus = Order.removeorder(loggedInCustomer, product);
+                ProductList.removerow();
+                if (orderStatus) {
+
+                    showDialogue("Order Deleted!!!!");
+
+                }
+                else {
+
+                    showDialogue("Order can't be deleted");
+                }
             }
         });
 
-        GridPane footer = new GridPane();
-        footer.setTranslateY(headerLine + height);
-        footer.add(buyNowButton, 0, 0);
-        footer.add(ordersButton, 1, 0);
 
         return footer;
     }
