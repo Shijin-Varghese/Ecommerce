@@ -18,6 +18,7 @@ public class ECommerce extends Application {
     Pane root;
     Pane bodyPane;
     Pane allOrders;
+    Button back=new Button("Back");
     Button signInButton = new Button("Sign In");
     Button signOutButton = new Button("Sign Out");
     Button buyNowButton = new Button("Buy Now");
@@ -237,15 +238,24 @@ public class ECommerce extends Application {
         dialog.getDialogPane().getButtonTypes().add(type);
         dialog.showAndWait();
     }
+    boolean includeremove=false;
     private GridPane footerBar() {
 
-
+//        GridPane footer1 = new GridPane();
         GridPane footer = new GridPane();
         footer.setTranslateY(headerLine + height);
         footer.add(buyNowButton, 0, 0);
         footer.add(ordersButton, 1, 0);
-        footer.add(removedButton,3,0);
+        System.out.println(includeremove);
+        if(includeremove){
+            footer.add(removedButton,0,0);
+            footer.setHgap(2);
+            footer.add(back,3,0);
+            buyNowButton.setVisible(false);
+            includeremove=false;
+        }
 
+//        removedButton.setVisible(false);
         buyNowButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -266,17 +276,28 @@ public class ECommerce extends Application {
                 }
             }
         });
-
-        ordersButton.setOnAction(new EventHandler<ActionEvent>() {
+        back.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+               buyNowButton.setVisible(true);
+            bodyPane.getChildren().clear();
+                bodyPane.getChildren().addAll(productList.getAllProducts());
+                root.getChildren().clear();
+                root.getChildren().addAll(headerBar(signOutButton), bodyPane, footerBar());
+            }
+        });
+        ordersButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                includeremove=true;
                 productList.getorderedlist(loggedInCustomer);
                 bodyPane.getChildren().clear();
                 bodyPane.getChildren().addAll( productList.getorderedlist(loggedInCustomer));
                 root.getChildren().clear();
 
-                removedButton.setVisible(true);
                 root.getChildren().addAll(headerBar(signOutButton), bodyPane, footerBar());
+
             }
         });
         removedButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -284,16 +305,12 @@ public class ECommerce extends Application {
             public void handle(ActionEvent actionEvent) {
                 Product product = productList.getSelectedProduct();
                 boolean orderStatus = false;
-
                 orderStatus = Order.removeorder(loggedInCustomer, product);
                 ProductList.removerow();
                 if (orderStatus) {
-
                     showDialogue("Order Deleted!!!!");
-
                 }
                 else {
-
                     showDialogue("Order can't be deleted");
                 }
             }
@@ -327,11 +344,10 @@ public class ECommerce extends Application {
     @FXML
     public void handleCloseButtonAction() {
         Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
-    }
+        stage.close();}
     // https://www.javatpoint.com/javafx-tutorial -----> java tutorial
     // https://docs.oracle.com/javase/8/javafx/api/javafx/application/Application.html
-    // https://www.tutorialspoint.com/javafx/javafx_application.htm
+    // https://www.tutorialspoint.com/javafx/javafx_application.html
     public static void main(String[] args) {
         launch();
     }
